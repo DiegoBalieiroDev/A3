@@ -126,22 +126,19 @@ public class TransacaoService {
             contaRepository.save(contaOrigem);
             contaRepository.save(contaDestino);
         } else {
-            // ------------------ PIX EXTERNO ------------------
+            // pix externo
             if (contaOrigem.getSaldo().compareTo(transacaoDTO.valor()) < 0)
                 throw new RuntimeException("Saldo insuficiente.");
-
-            // Debita apenas na origem
+            
             contaOrigem.sacar(transacaoDTO.valor());
             contaRepository.save(contaOrigem);
 
-            // Mantém as informações do destinatário enviadas no DTO
             transacao.setNomeDestinatario("PIX externo");
             transacao.setCpfDestinatario("00000000000");
             transacao.setStatus(StatusTransacao.APROVADA);
             transacao.setSuspeitaGolpe(false);
         }
 
-        // 🔹 6. Salva a transação
         return transacaoRepository.save(transacao);
     }
 
@@ -168,3 +165,4 @@ public class TransacaoService {
 
 
 }
+
