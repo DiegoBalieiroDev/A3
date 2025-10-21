@@ -1,0 +1,1 @@
+Trabalho em desenvolvimento na Universidade Anhembi Morumbi, vinculado à Unidade Curricular de Sistemas Distribuídos. O projeto faz parte da iniciativa interdisciplinar DUAL, em parceria com o Bradesco, e aborda o tema de fraudes envolvendo o Banco Central. A proposta escolhida pelo grupo foi intitulada "O Golpe do Pix
