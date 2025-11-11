@@ -25,11 +25,11 @@ public class ContaController {
     }
 
     // POST /contas/1/depositar?valor=500
-    @PostMapping("/{id}/depositar")
-    public ResponseEntity<DepositarDTO> depositar(@PathVariable Long id, @RequestParam BigDecimal valor) {
-
-        var conta = service.depositar(id, valor);
-
-        return ResponseEntity.ok(new DepositarDTO(conta, valor));
-    }
+//    @PostMapping("/{id}/depositar")
+//    public ResponseEntity<DepositarDTO> depositar(@PathVariable Long id, @RequestParam BigDecimal valor) {
+//
+//        var conta = service.depositar(id, valor);
+//
+//        return ResponseEntity.ok(new DepositarDTO(conta, valor));
+//    }
 }

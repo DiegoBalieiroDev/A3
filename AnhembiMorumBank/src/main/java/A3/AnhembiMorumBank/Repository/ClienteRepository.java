@@ -17,4 +17,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Optional<Cliente> findByChavePix(String chavePix);
 
     boolean existsByConta_NumeroConta(String numero);
+
+    Optional<Cliente> findByEmail(String email);
+
 }

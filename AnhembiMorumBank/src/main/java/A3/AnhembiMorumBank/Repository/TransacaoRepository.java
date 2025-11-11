@@ -13,11 +13,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TransacaoRepository extends JpaRepository <Transacao,Long> {
-    Page<Transacao> findAllByClienteOrigem(Cliente cliente, Pageable pageable);
+    @Query("select coalesce(sum(t.valor), 0) from Transacao t where t.clienteOrigem = :cliente and t.data >= :from")
+    BigDecimal findTotalValorByClienteAndDataAfter(Cliente cliente, LocalDateTime from);
 
-    List<Transacao> findByClienteOrigemAndDataAfter(Cliente cliente, LocalDateTime transacoesRecentes);
+    List<Transacao> findByClienteOrigemAndDataAfter(Cliente clienteOrigem, LocalDateTime from);
 
-    @Query("SELECT COALESCE(SUM(t.valor), 0) FROM Transacao t WHERE t.clienteOrigem = :cliente AND t.data >= :data")
-    BigDecimal findTotalValorByClienteAndDataAfter(@Param("cliente") Cliente cliente,
-                                                   @Param("data") LocalDateTime data);
+    @Query("select count(t) from Transacao t where t.clienteOrigem = :cliente and t.data >= :from")
+    long countByClienteOrigemAndDataAfter(Cliente cliente, LocalDateTime from);
+
+    @Query("select avg(t.valor) from Transacao t where t.clienteOrigem = :cliente")
+    BigDecimal findAverageValorByCliente(Cliente cliente);
+
+    // conta quantas transacoes do mesmo valor foram feitas por cliente após 'from'
+    @Query("select count(t) from Transacao t where t.clienteOrigem = :cliente and t.valor = :valor and t.data >= :from")
+    long countByClienteOrigemAndValorAndDataAfter(Cliente cliente, BigDecimal valor, LocalDateTime from);
+
+    List<Transacao> findByClienteOrigemOrCpfDestinatario(Cliente origem, String cpfDestinatario);
 }

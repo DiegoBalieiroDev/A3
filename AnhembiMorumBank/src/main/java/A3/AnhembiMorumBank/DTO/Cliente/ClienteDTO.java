@@ -34,6 +34,8 @@ public record ClienteDTO(
         TipoCliente tipoCliente,
 
         @NotNull
-        EnderecoDTO endereco
+        EnderecoDTO endereco,
+
+        String senha
 ) {
 }

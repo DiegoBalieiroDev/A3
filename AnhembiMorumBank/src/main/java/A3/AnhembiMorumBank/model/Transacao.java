@@ -40,6 +40,10 @@ public class Transacao {
 
     private String cpfDestinatario;
 
+    private Integer fraudScore;
+    @Column(length = 2000)
+    private String fraudReasons;
+
     public Transacao() {
     }
 
@@ -56,13 +60,15 @@ public class Transacao {
         this.cpfDestinatario = cpfDestinatario;
     }
 
+    // Construtor que recebe DTO e inicializa defaults defensivos para evitar NULL no DB
     public Transacao(Cliente clienteOrigem, TransacaoDTO dto) {
         this.clienteOrigem = clienteOrigem;
         this.valor = dto.valor();
         this.chavePixDestino = dto.chavePixDestino();
-        this.cpfDestinatario = dto.cpfDestinatario();
-        this.data = LocalDateTime.now();
-        this.status = StatusTransacao.APROVADA;
+        // se caller forneceu nome/cpf no DTO, usa; senão defaults para evitar INSERT NULL
+        this.nomeDestinatario = dto.nomeDestinatario() != null ? dto.nomeDestinatario() : "DESTINATÁRIO DESCONHECIDO";
+        this.cpfDestinatario = dto.cpfDestinatario() != null ? dto.cpfDestinatario() : "00000000000";
+        this.status = StatusTransacao.PENDENTE;
         this.suspeitaGolpe = false;
     }
 
@@ -147,7 +153,19 @@ public class Transacao {
         this.cpfDestinatario = cpfDestinatario;
     }
 
+    public Integer getFraudScore() {
+        return fraudScore;
+    }
 
+    public void setFraudScore(Integer fraudScore) {
+        this.fraudScore = fraudScore;
+    }
 
+    public String getFraudReasons() {
+        return fraudReasons;
+    }
 
+    public void setFraudReasons(String fraudReasons) {
+        this.fraudReasons = fraudReasons;
+    }
 }

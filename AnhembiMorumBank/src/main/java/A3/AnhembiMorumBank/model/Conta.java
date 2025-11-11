@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "contas")
@@ -26,6 +27,9 @@ public class Conta {
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal saldo = BigDecimal.ZERO;
+
+    @Column(name = "criado_em")
+    private LocalDateTime criadoEm;
 
     public Conta() {
     }
@@ -53,6 +57,11 @@ public class Conta {
         this.saldo = this.saldo.subtract(valor);
     }
 
+    public LocalDateTime getCriacao() {
+        return criadoEm;
+    }
+
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -72,4 +81,12 @@ public class Conta {
     public BigDecimal getSaldo() { return saldo; }
 
     public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
+
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
+    }
 }

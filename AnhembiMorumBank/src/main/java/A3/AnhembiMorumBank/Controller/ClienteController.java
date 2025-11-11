@@ -1,17 +1,17 @@
 package A3.AnhembiMorumBank.Controller;
 
-import A3.AnhembiMorumBank.DTO.Cliente.AtualizarClienteDTO;
-import A3.AnhembiMorumBank.DTO.Cliente.ClienteDTO;
-import A3.AnhembiMorumBank.DTO.Cliente.ClienteListagemDTO;
-import A3.AnhembiMorumBank.DTO.Cliente.DetalhamentoClienteDTO;
+import A3.AnhembiMorumBank.DTO.Cliente.*;
 import A3.AnhembiMorumBank.Service.ClienteService;
+import A3.AnhembiMorumBank.model.Cliente;
 import A3.AnhembiMorumBank.model.TipoCliente;
+import A3.AnhembiMorumBank.model.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -32,6 +32,13 @@ public class ClienteController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(new DetalhamentoClienteDTO(cliente));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<DetalhamentoClienteDTO> getMe() {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Cliente cliente = service.buscarPorLogin(usuario.getLogin()); // login == email
+        return ResponseEntity.ok(new DetalhamentoClienteDTO(cliente));
     }
 
     @GetMapping
@@ -62,6 +69,14 @@ public class ClienteController {
         service.deletarCliente(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/pix/{chave}")
+    public ResponseEntity<?> buscarPorChavePix(@PathVariable String chave) {
+
+        return service.buscarPorChavePix(chave)
+                .map(cliente -> ResponseEntity.ok(new ClientePixDTO(cliente)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 

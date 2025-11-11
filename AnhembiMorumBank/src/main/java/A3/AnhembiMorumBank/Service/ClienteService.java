@@ -4,24 +4,36 @@ import A3.AnhembiMorumBank.DTO.Cliente.AtualizarClienteDTO;
 import A3.AnhembiMorumBank.DTO.Cliente.ClienteDTO;
 import A3.AnhembiMorumBank.DTO.Cliente.ClienteListagemDTO;
 import A3.AnhembiMorumBank.Repository.ClienteRepository;
+import A3.AnhembiMorumBank.Repository.UsuarioRepository;
 import A3.AnhembiMorumBank.model.Cliente;
 import A3.AnhembiMorumBank.model.Conta;
 import A3.AnhembiMorumBank.model.TipoCliente;
+import A3.AnhembiMorumBank.model.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class ClienteService {
 
     @Autowired
     private ClienteRepository repository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder password;
 
     @Transactional
     public Cliente cadastrarCliente(ClienteDTO dados) {
@@ -37,8 +49,15 @@ public class ClienteService {
 
         // vincula conta ao cliente
         cliente.vincularConta(conta);
+        conta.setCriadoEm(LocalDateTime.now());
 
         repository.save(cliente);
+
+        Usuario usuario = new Usuario();
+        usuario.setLogin(cliente.getEmail());
+        usuario.setSenha(password.encode(dados.senha()));
+
+        usuarioRepository.save(usuario);
 
         return cliente;
     }
@@ -63,6 +82,11 @@ public class ClienteService {
                 .map(ClienteListagemDTO::new);
     }
 
+    public Cliente buscarPorLogin(String login) {
+        return repository.findByEmail(login)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado para usuário logado."));
+    }
+
     @Transactional
     public Cliente atualizarCliente(AtualizarClienteDTO dados) {
         var cliente = repository.getReferenceById(dados.id());
@@ -74,5 +98,9 @@ public class ClienteService {
     public void deletarCliente(Long id) {
         var medico = repository.getReferenceById(id);
         medico.excluir();
+    }
+
+    public Optional<Cliente> buscarPorChavePix(String chave) {
+        return repository.findByChavePix(chave);
     }
 }
