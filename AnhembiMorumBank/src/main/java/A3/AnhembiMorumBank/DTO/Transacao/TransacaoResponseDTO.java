@@ -13,7 +13,9 @@ public record TransacaoResponseDTO(
         BigDecimal valor,
         String status,
         boolean suspeitaGolpe,
-        LocalDateTime data
+        LocalDateTime data,
+        Integer fraudScore,
+        String fraudReasons
 ) {
     public TransacaoResponseDTO(Transacao transacao) {
         this(
@@ -24,7 +26,9 @@ public record TransacaoResponseDTO(
                 transacao.getValor(),
                 transacao.getStatus().toString(),
                 transacao.isSuspeitaGolpe(),
-                transacao.getData()
+                transacao.getData(),
+                transacao.getFraudScore(),      // novos campos
+                transacao.getFraudReasons()
         );
     }
 }

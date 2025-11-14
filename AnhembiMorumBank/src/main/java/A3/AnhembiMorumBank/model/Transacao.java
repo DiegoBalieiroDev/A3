@@ -40,6 +40,10 @@ public class Transacao {
 
     private String cpfDestinatario;
 
+    private Integer fraudScore;
+    @Column(length = 2000)
+    private String fraudReasons;
+
     public Transacao() {
     }
 
@@ -147,7 +151,19 @@ public class Transacao {
         this.cpfDestinatario = cpfDestinatario;
     }
 
+    public Integer getFraudScore() {
+        return fraudScore;
+    }
 
+    public void setFraudScore(Integer fraudScore) {
+        this.fraudScore = fraudScore;
+    }
 
+    public String getFraudReasons() {
+        return fraudReasons;
+    }
 
+    public void setFraudReasons(String fraudReasons) {
+        this.fraudReasons = fraudReasons;
+    }
 }
