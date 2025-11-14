@@ -38,6 +38,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             // 4. "Força" a autenticação: Informa ao Spring que este usuário está
             // autenticado para esta requisição específica.
             var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
@@ -48,8 +49,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private String recuperarToken(HttpServletRequest request) {
+
         var authorizationHeader = request.getHeader("Authorization");
+
         if (authorizationHeader != null) {
+            // esquema de autenticação para request protegida
             return authorizationHeader.replace("Bearer ", "");
         }
         return null;

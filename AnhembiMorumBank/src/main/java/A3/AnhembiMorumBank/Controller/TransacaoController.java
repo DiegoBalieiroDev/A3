@@ -50,7 +50,7 @@ public class TransacaoController {
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public ResponseEntity<List<TransacaoResponseDTO>> listarTodas() {
         List<TransacaoResponseDTO> lista = service.listarTodas()
                 .stream()
@@ -58,4 +58,26 @@ public class TransacaoController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
+
+    @PostMapping("/{id}/aprovar")
+    public ResponseEntity<?> aprovar(@PathVariable Long id) {
+        service.aprovarTransacao(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/negar")
+    public ResponseEntity<?> negar(@PathVariable Long id) {
+        service.negarTransacao(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/pendentes")
+    public ResponseEntity<List<TransacaoResponseDTO>> listarPendentes() {
+        return ResponseEntity.ok(
+                service.listarPendentes().stream()
+                        .map(TransacaoResponseDTO::new)
+                        .toList()
+        );
+    }
+
 }

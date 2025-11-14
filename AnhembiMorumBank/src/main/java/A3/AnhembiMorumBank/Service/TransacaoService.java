@@ -1,6 +1,7 @@
 package A3.AnhembiMorumBank.Service;
 
 import A3.AnhembiMorumBank.DTO.Transacao.TransacaoDTO;
+import A3.AnhembiMorumBank.DTO.Transacao.TransacaoResponseDTO;
 import A3.AnhembiMorumBank.Repository.ClienteRepository;
 import A3.AnhembiMorumBank.Repository.ContaRepository;
 import A3.AnhembiMorumBank.Repository.TransacaoRepository;
@@ -32,7 +33,7 @@ public class TransacaoService {
     @Transactional
     public Transacao realizarTransacao(TransacaoDTO transacaoDTO) {
 
-        // 1) carregar origem
+        // carregar origem
         Cliente clienteOrigem = clienteRepository.findById(transacaoDTO.clienteOrigemId())
                 .orElseThrow(() -> new RuntimeException("Cliente de origem não encontrado."));
 
@@ -47,11 +48,11 @@ public class TransacaoService {
                 clienteOrigem.getChavePix().equals(transacaoDTO.chavePixDestino()))
             throw new RuntimeException("Não é permitido transferir para si mesmo.");
 
-        // 2) criar transacao em memória
+        // criar transacao em memória
         Transacao transacao = new Transacao(clienteOrigem, transacaoDTO);
         transacao.setData(LocalDateTime.now());
 
-        // 3) RESOLVER DESTINO
+        // destino da transacao
         Optional<Cliente> clienteDestinoOpt = clienteRepository.findByChavePix(transacaoDTO.chavePixDestino());
         Cliente clienteDestino = null;
         Conta contaDestino = null;
@@ -69,7 +70,7 @@ public class TransacaoService {
                     clienteDestino.getId(), clienteDestino.getNome(), clienteDestino.getCpf());
 
         } else {
-            // PIX externo
+            // se cliente e conta forem null
             transacao.setNomeDestinatario("PIX externo");
             transacao.setCpfDestinatario("00000000000");
 
@@ -159,4 +160,38 @@ public class TransacaoService {
     public List<Transacao> listarTodas() {
         return transacaoRepository.findAll();
     }
+
+
+    // admin
+
+    public void aprovarTransacao(Long id) {
+        Transacao t = transacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transação não existe"));
+
+        if (t.getStatus() != StatusTransacao.PENDENTE_ANALISE)
+            throw new RuntimeException("Transação não está pendente");
+
+        t.setStatus(StatusTransacao.APROVADA);
+        t.setSuspeitaGolpe(false);
+
+        transacaoRepository.save(t);
+    }
+
+    public void negarTransacao(Long id) {
+        Transacao t = transacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transação não existe"));
+
+        if (t.getStatus() != StatusTransacao.PENDENTE_ANALISE)
+            throw new RuntimeException("Transação não está pendente");
+
+        t.setStatus(StatusTransacao.NEGADA);
+        t.setSuspeitaGolpe(true);
+
+        transacaoRepository.save(t);
+    }
+
+    public List<Transacao> listarPendentes() {
+        return transacaoRepository.findByStatus(StatusTransacao.PENDENTE_ANALISE);
+    }
+
 }

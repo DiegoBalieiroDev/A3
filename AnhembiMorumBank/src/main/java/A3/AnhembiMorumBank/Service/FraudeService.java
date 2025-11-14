@@ -21,12 +21,7 @@ public class FraudeService {
         this.transacaoRepository = transacaoRepository;
     }
 
-    public FraudResult evaluate(
-            TransacaoDTO dto,
-            Cliente clienteOrigem,
-            Conta contaOrigem,
-            Cliente clienteDestino,
-            Conta contaDestino
+    public FraudResult evaluate(TransacaoDTO dto, Cliente clienteOrigem, Conta contaOrigem, Cliente clienteDestino, Conta contaDestino
     ) {
         int score = 0;
         List<String> reasons = new ArrayList<>();

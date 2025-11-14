@@ -41,22 +41,6 @@ public class ClienteController {
         return ResponseEntity.ok(new DetalhamentoClienteDTO(cliente));
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ClienteListagemDTO>> consultarClientesAtivos(
-     @RequestParam(required = false) TipoCliente tipo,
-     @PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
-
-        Page<ClienteListagemDTO> page;
-
-        if (tipo != null) {
-            page = service.listarClientePorTipo(tipo, paginacao);
-        } else {
-            page = service.listarClientes(paginacao);
-        }
-
-        return ResponseEntity.ok(page);
-    }
-
     @PutMapping
     public ResponseEntity atualizarCliente(@RequestBody @Valid AtualizarClienteDTO dados) {
         var cliente = service.atualizarCliente(dados);
@@ -71,13 +55,15 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
+    // confirmação de cliente tela pix
     @GetMapping("/pix/{chave}")
-    public ResponseEntity<?> buscarPorChavePix(@PathVariable String chave) {
+    public ResponseEntity<ClientePixDTO> buscarPorChavePix(@PathVariable String chave) {
+        var cliente = service.buscarPorChavePix(chave);
 
-        return service.buscarPorChavePix(chave)
-                .map(cliente -> ResponseEntity.ok(new ClientePixDTO(cliente)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (cliente.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(new ClientePixDTO(cliente.get()));
     }
-
-
 }

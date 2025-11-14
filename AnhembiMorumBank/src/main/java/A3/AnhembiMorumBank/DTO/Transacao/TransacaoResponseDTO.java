@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public record TransacaoResponseDTO(
         Long id,
         String nomeOrigem,
+        String cpfOrigem,
         String nomeDestinatario,
         String cpfDestinatario,
         BigDecimal valor,
@@ -25,6 +26,7 @@ public record TransacaoResponseDTO(
         this(
                 transacao.getId(),
                 transacao.getClienteOrigem().getNome(),
+                transacao.getClienteOrigem().getCpf(),
                 transacao.getNomeDestinatario(),
                 transacao.getCpfDestinatario(),
                 transacao.getValor(),

@@ -1,5 +1,6 @@
 package A3.AnhembiMorumBank.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,8 @@ import java.util.List;
 
 @Entity(name = "Usuario")
 @Table(name = "usuarios")
+// userDetails para que o Spring saiba que representa o usuario
+// com métodos da interface do spring
 public class Usuario implements UserDetails {
 
     @Id
@@ -23,6 +26,10 @@ public class Usuario implements UserDetails {
     @OneToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Perfil perfil;
 
     public Usuario() {
     }
@@ -57,9 +64,26 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
+    }
+
+    // Perfis de acesso
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + perfil.name()));
     }
 
     @Override

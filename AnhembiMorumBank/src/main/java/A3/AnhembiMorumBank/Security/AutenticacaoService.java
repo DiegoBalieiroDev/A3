@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+// service do usuário quando o processo de autenticação for disparado
 public class AutenticacaoService implements UserDetailsService {
 
     @Autowired

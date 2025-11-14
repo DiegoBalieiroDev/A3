@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -32,6 +34,11 @@ public class SecurityConfig {
                     req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     req.requestMatchers("/login").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/clientes").permitAll();
+                    req.requestMatchers("/admin/**").hasRole("ADMIN");
+                    req.requestMatchers("/clientes/me").hasRole("CLIENTE");
+                    req.requestMatchers("/transacoes/me").hasRole("CLIENTE");
+                    req.requestMatchers("/transacoes/pendentes/**").hasRole("ADMIN");
+                    req.requestMatchers("/transacoes/admin").hasRole("ADMIN");
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)

@@ -24,7 +24,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("anhembimorumbank")
                     .withSubject(usuario.getLogin())
-                    .withClaim("id", usuario.getId())
+                    .withClaim("perfil", usuario.getPerfil().name())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
         } catch (JWTCreationException exception){

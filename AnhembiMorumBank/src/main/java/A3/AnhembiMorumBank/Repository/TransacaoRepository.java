@@ -1,6 +1,8 @@
 package A3.AnhembiMorumBank.Repository;
 
+import A3.AnhembiMorumBank.DTO.Transacao.TransacaoResponseDTO;
 import A3.AnhembiMorumBank.model.Cliente;
+import A3.AnhembiMorumBank.model.StatusTransacao;
 import A3.AnhembiMorumBank.model.Transacao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,4 +31,8 @@ public interface TransacaoRepository extends JpaRepository <Transacao,Long> {
     long countByClienteOrigemAndValorAndDataAfter(Cliente cliente, BigDecimal valor, LocalDateTime from);
 
     List<Transacao> findByClienteOrigemOrCpfDestinatario(Cliente origem, String cpfDestinatario);
+
+
+    List<Transacao> findByStatus(StatusTransacao statusTransacao);
+
 }

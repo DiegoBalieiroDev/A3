@@ -5,10 +5,7 @@ import A3.AnhembiMorumBank.DTO.Cliente.ClienteDTO;
 import A3.AnhembiMorumBank.DTO.Cliente.ClienteListagemDTO;
 import A3.AnhembiMorumBank.Repository.ClienteRepository;
 import A3.AnhembiMorumBank.Repository.UsuarioRepository;
-import A3.AnhembiMorumBank.model.Cliente;
-import A3.AnhembiMorumBank.model.Conta;
-import A3.AnhembiMorumBank.model.TipoCliente;
-import A3.AnhembiMorumBank.model.Usuario;
+import A3.AnhembiMorumBank.model.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +34,11 @@ public class ClienteService {
 
     @Transactional
     public Cliente cadastrarCliente(ClienteDTO dados) {
+
+        if (usuarioRepository.existsByLogin(dados.email())) {
+            throw new RuntimeException("Já existe um usuário com esse e-mail.");
+        }
+
         Cliente cliente = new Cliente(dados);
 
         String numeroConta = gerarNumeroConta();
@@ -56,6 +58,7 @@ public class ClienteService {
         Usuario usuario = new Usuario();
         usuario.setLogin(cliente.getEmail());
         usuario.setSenha(password.encode(dados.senha()));
+        usuario.setPerfil(Perfil.CLIENTE);
 
         usuarioRepository.save(usuario);
 
@@ -71,16 +74,7 @@ public class ClienteService {
     }
 
 
-    public Page<ClienteListagemDTO> listarClientes(Pageable paginacao) {
-        return repository.findAllByAtivoTrue(paginacao)
-                .map(ClienteListagemDTO::new);
-    }
 
-
-    public Page<ClienteListagemDTO> listarClientePorTipo(TipoCliente tipo, Pageable paginacao) {
-        return repository.findAllByAtivoTrueAndTipoCliente(tipo, paginacao)
-                .map(ClienteListagemDTO::new);
-    }
 
     public Cliente buscarPorLogin(String login) {
         return repository.findByEmail(login)
