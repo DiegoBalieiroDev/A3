@@ -19,7 +19,9 @@ public record TransacaoDTO(
         String nomeDestinatario,
 
 
-        String cpfDestinatario
+        String cpfDestinatario,
+
+        String pin
 
 
 ) {

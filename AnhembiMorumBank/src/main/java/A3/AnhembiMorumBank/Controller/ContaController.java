@@ -4,6 +4,7 @@ import A3.AnhembiMorumBank.DTO.ContaDTO.DepositarDTO;
 import A3.AnhembiMorumBank.DTO.ContaDTO.SaldoDTO;
 import A3.AnhembiMorumBank.Repository.ContaRepository;
 import A3.AnhembiMorumBank.Service.ContaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/contas")
+@SecurityRequirement(name = "bearer-key")
 public class ContaController {
 
     @Autowired
@@ -25,11 +27,11 @@ public class ContaController {
     }
 
     // POST /contas/1/depositar?valor=500
-//    @PostMapping("/{id}/depositar")
-//    public ResponseEntity<DepositarDTO> depositar(@PathVariable Long id, @RequestParam BigDecimal valor) {
-//
-//        var conta = service.depositar(id, valor);
-//
-//        return ResponseEntity.ok(new DepositarDTO(conta, valor));
-//    }
+    @PostMapping("/{id}/depositar")
+    public ResponseEntity<DepositarDTO> depositar(@PathVariable Long id, @RequestParam BigDecimal valor) {
+
+        var conta = service.depositar(id, valor);
+
+        return ResponseEntity.ok(new DepositarDTO(conta, valor));
+    }
 }

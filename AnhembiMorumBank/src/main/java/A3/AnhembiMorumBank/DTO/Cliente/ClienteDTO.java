@@ -3,9 +3,7 @@ package A3.AnhembiMorumBank.DTO.Cliente;
 import A3.AnhembiMorumBank.DTO.Endereco.EnderecoDTO;
 
 import A3.AnhembiMorumBank.model.TipoCliente;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDateTime;
@@ -36,6 +34,10 @@ public record ClienteDTO(
         @NotNull
         EnderecoDTO endereco,
 
-        String senha
+        String senha,
+
+        @NotBlank
+        @Pattern(regexp = "\\d{4}", message = "PIN deve conter exatamente 4 dígitos.")
+        String pin
 ) {
 }

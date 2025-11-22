@@ -4,6 +4,7 @@ import A3.AnhembiMorumBank.DTO.Cliente.ClienteListagemDTO;
 import A3.AnhembiMorumBank.Service.AdminService;
 import A3.AnhembiMorumBank.Service.ClienteService;
 import A3.AnhembiMorumBank.model.TipoCliente;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
+@SecurityRequirement(name = "bearer-key")
 public class AdminController {
 
     @Autowired

@@ -1,5 +1,6 @@
 package A3.AnhembiMorumBank.Security;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     req.requestMatchers("/login").permitAll();
+                    req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();
+
                     req.requestMatchers(HttpMethod.POST, "/clientes").permitAll();
                     req.requestMatchers("/admin/**").hasRole("ADMIN");
                     req.requestMatchers("/clientes/me").hasRole("CLIENTE");

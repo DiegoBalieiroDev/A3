@@ -2,19 +2,13 @@ package A3.AnhembiMorumBank.Service;
 
 import A3.AnhembiMorumBank.DTO.Cliente.AtualizarClienteDTO;
 import A3.AnhembiMorumBank.DTO.Cliente.ClienteDTO;
-import A3.AnhembiMorumBank.DTO.Cliente.ClienteListagemDTO;
 import A3.AnhembiMorumBank.Repository.ClienteRepository;
 import A3.AnhembiMorumBank.Repository.UsuarioRepository;
 import A3.AnhembiMorumBank.model.*;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,27 +33,30 @@ public class ClienteService {
             throw new RuntimeException("Já existe um usuário com esse e-mail.");
         }
 
+//         cria cliente
         Cliente cliente = new Cliente(dados);
 
-        String numeroConta = gerarNumeroConta();
-        String agencia = "0001"; // pode ser fixa ou gerar dinamicamente
-
+//         cria conta
         Conta conta = new Conta();
-        conta.setNumeroConta(numeroConta);
-        conta.setAgencia(agencia);
-        conta.setSaldo(new BigDecimal("1000.00")); // saldo inicial de exemplo
-
-        // vincula conta ao cliente
-        cliente.vincularConta(conta);
+        conta.setNumeroConta(gerarNumeroConta());
+        conta.setAgencia("0001");
+        conta.setSaldo(new BigDecimal("1000.00"));
         conta.setCriadoEm(LocalDateTime.now());
+        cliente.vincularConta(conta);
 
+        cliente.setPin(password.encode(dados.pin()));
+
+//         salva cliente
         repository.save(cliente);
 
+//         cria usuario
         Usuario usuario = new Usuario();
         usuario.setLogin(cliente.getEmail());
         usuario.setSenha(password.encode(dados.senha()));
         usuario.setPerfil(Perfil.CLIENTE);
+        usuario.setCliente(cliente);
 
+//        salva info dos usuarios
         usuarioRepository.save(usuario);
 
         return cliente;

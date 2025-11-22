@@ -5,6 +5,7 @@ import A3.AnhembiMorumBank.DTO.Transacao.TransacaoResponseDTO;
 import A3.AnhembiMorumBank.Service.TransacaoService;
 import A3.AnhembiMorumBank.model.Transacao;
 import A3.AnhembiMorumBank.model.Usuario;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transacoes")
+@SecurityRequirement(name = "bearer-key")
 public class TransacaoController {
 
     @Autowired

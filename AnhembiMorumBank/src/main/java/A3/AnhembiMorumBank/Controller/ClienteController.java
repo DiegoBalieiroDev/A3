@@ -5,6 +5,7 @@ import A3.AnhembiMorumBank.Service.ClienteService;
 import A3.AnhembiMorumBank.model.Cliente;
 import A3.AnhembiMorumBank.model.TipoCliente;
 import A3.AnhembiMorumBank.model.Usuario;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ public class ClienteController {
         return ResponseEntity.created(uri).body(new DetalhamentoClienteDTO(cliente));
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @GetMapping("/me")
     public ResponseEntity<DetalhamentoClienteDTO> getMe() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -41,6 +43,7 @@ public class ClienteController {
         return ResponseEntity.ok(new DetalhamentoClienteDTO(cliente));
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @PutMapping
     public ResponseEntity atualizarCliente(@RequestBody @Valid AtualizarClienteDTO dados) {
         var cliente = service.atualizarCliente(dados);
@@ -48,6 +51,7 @@ public class ClienteController {
         return ResponseEntity.ok(new DetalhamentoClienteDTO(cliente));
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @DeleteMapping("/{id}")
     public ResponseEntity inativarCliente(@PathVariable Long id) {
         service.deletarCliente(id);
@@ -55,6 +59,7 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
+    @SecurityRequirement(name = "bearer-key")
     // confirmação de cliente tela pix
     @GetMapping("/pix/{chave}")
     public ResponseEntity<ClientePixDTO> buscarPorChavePix(@PathVariable String chave) {

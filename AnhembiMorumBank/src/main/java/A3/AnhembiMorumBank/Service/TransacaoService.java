@@ -1,7 +1,6 @@
 package A3.AnhembiMorumBank.Service;
 
 import A3.AnhembiMorumBank.DTO.Transacao.TransacaoDTO;
-import A3.AnhembiMorumBank.DTO.Transacao.TransacaoResponseDTO;
 import A3.AnhembiMorumBank.Repository.ClienteRepository;
 import A3.AnhembiMorumBank.Repository.ContaRepository;
 import A3.AnhembiMorumBank.Repository.TransacaoRepository;
@@ -12,6 +11,7 @@ import A3.AnhembiMorumBank.model.Conta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +25,24 @@ public class TransacaoService {
 
     private static final Logger log = LoggerFactory.getLogger(TransacaoService.class);
 
-    @Autowired private TransacaoRepository transacaoRepository;
-    @Autowired private ContaRepository contaRepository;
-    @Autowired private ClienteRepository clienteRepository;
-    @Autowired private FraudeService fraudeService;
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
+    @Autowired
+    private ContaRepository contaRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
+    private FraudeService fraudeService;
+
+    @Autowired
+    private PasswordEncoder password;
 
     @Transactional
     public Transacao realizarTransacao(TransacaoDTO transacaoDTO) {
+
 
         // carregar origem
         Cliente clienteOrigem = clienteRepository.findById(transacaoDTO.clienteOrigemId())
@@ -39,6 +50,16 @@ public class TransacaoService {
 
         Conta contaOrigem = contaRepository.findByCliente(clienteOrigem)
                 .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
+
+
+        // validar PIN
+        if (transacaoDTO.pin() == null || transacaoDTO.pin().length() != 4) {
+            throw new RuntimeException("PIN inválido.");
+        }
+
+        if (!password.matches(transacaoDTO.pin(), clienteOrigem.getPin())) {
+            throw new RuntimeException("PIN incorreto.");
+        }
 
         if (transacaoDTO.valor() == null || transacaoDTO.valor().compareTo(BigDecimal.ZERO) <= 0)
             throw new RuntimeException("Valor inválido para transação.");

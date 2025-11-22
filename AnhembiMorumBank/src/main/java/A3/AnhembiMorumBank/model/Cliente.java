@@ -23,6 +23,9 @@ public class Cliente {
     private String cpf;
     private String chavePix;
 
+    @Column(nullable = false)
+    private String pin;
+
     private Boolean ativo = true;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
@@ -39,6 +42,9 @@ public class Cliente {
     @OneToMany(mappedBy = "clienteOrigem")
     @JsonManagedReference(value = "cliente-transacoes")
     private List<Transacao> transacoes;
+
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private Usuario usuario;
 
     @Embedded
     private Endereco endereco;
@@ -169,6 +175,23 @@ public class Cliente {
 
     public void setConta(Conta conta) {
         this.conta = conta;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pinTransacao) {
+        this.pin = pinTransacao;
+    }
+
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public void vincularConta(Conta conta) {

@@ -1,0 +1,3 @@
+ALTER TABLE clientes
+    ADD COLUMN pin VARCHAR(255) NOT NULL;
+
