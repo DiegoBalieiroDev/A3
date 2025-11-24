@@ -45,7 +45,7 @@ public class FraudeService {
         // 3) Horario noturno
         int hora = LocalDateTime.now().getHour();
         if (hora >= 22 || hora < 6) {
-            score += 20;
+            score += 40;
             reasons.add("Transação em horário noturno");
         }
 
@@ -62,8 +62,8 @@ public class FraudeService {
                 clienteOrigem,
                 LocalDate.now().atStartOfDay()
         );
-        if (countHoje > 20) {
-            score += 30;
+        if (countHoje > 10) {
+            score += 60;
             reasons.add("Número alto de transações hoje");
         }
 
@@ -81,7 +81,7 @@ public class FraudeService {
         if (media == null) media = BigDecimal.ZERO;
         if (media.compareTo(BigDecimal.ZERO) > 0 && dto.valor() != null &&
                 dto.valor().compareTo(media.multiply(new BigDecimal("5"))) > 0) {
-            score += 30;
+            score += 40;
             reasons.add("Valor muito acima da média habitual");
         }
 
@@ -101,7 +101,7 @@ public class FraudeService {
         }
 
         // Thresholds
-        if (score >= 80) return new FraudResult(score, reasons, FraudResult.Action.DENY);
+        if (score >= 60) return new FraudResult(score, reasons, FraudResult.Action.DENY);
         if (score >= 40) return new FraudResult(score, reasons, FraudResult.Action.PENDING_REVIEW);
 
         return new FraudResult(score, reasons, FraudResult.Action.APPROVE);
