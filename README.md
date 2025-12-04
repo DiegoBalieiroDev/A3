@@ -298,11 +298,3 @@ Uso livre para fins de estudo e evolução profissional.
 **Diego Balieiro** – Auditor, estudante de ADS e desenvolvedor em evolução.
 
 ---
-
-Se quiser, posso também criar:
-✔ Um **diagrama UML completo** do projeto
-✔ Uma **versão em inglês** deste README
-✔ Um **PDF profissional** para ser usado na entrega da faculdade
-✔ Slides para apresentação
-
-Só pedir!
